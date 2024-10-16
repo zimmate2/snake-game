@@ -28,7 +28,7 @@ Pipeline
       }
     }
  
-     stage('BUILD-AND-TAG')
+    stage('BUILD-AND-TAG')
     {
       agent
       {
@@ -44,7 +44,7 @@ Pipeline
       }
     }
  
-      stage('POST-TO-DOCKERHUB')
+    stage('POST-TO-DOCKERHUB')
     {
       agent
       {
@@ -62,6 +62,19 @@ Pipeline
             }
            
          }
+      }
+    }
+ 
+    stage('DEPLOYMENT')
+    {
+      agent
+      {
+        label 'ubuntu-APPserver'
+      }
+      steps
+      {
+        sh "docker-compose down"
+        sh "docker-compose up -d"
       }
     }
  
