@@ -54,7 +54,7 @@ pipeline
       {
          script
          {
-            docker.withRegistry("https://registry.hub.docker.com", "dockerhub_credentials")
+            docker.withRegistry("https://registry.hub.docker.com", "zimmate")
             {
                 def app = docker.image("zimmate222/snakegame")
                 app.push("latest")
