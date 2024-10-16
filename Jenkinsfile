@@ -1,33 +1,72 @@
-node('ubuntu-APPserver')
+Pipeline
 {
-
-def app 
-stage('Cloning git')
-{
-    /*code for cloning repository to our workspace */
-    checkout scm
-}
-
-stage('Build-and-tag')
-{
-    /*this builds the image
-        this is synonymous to docker build on the CLI */
-    app = docker.build('zimmate222/snakegame')
-}
-
-stage('Push-to-dockerhub')
-{
-    /* this code pushes the changes to docker hub*/
-    docker.withRegistry('https://registry.hub.docker.com', 'zimmate')
+  agent none
+ 
+  stages
+  {
+    stage('CLONE GIT REPOSITORY')
     {
-        app.push('latest')
+      agent
+      {
+        label 'ubuntu-APPserver'
+      }
+      steps
+      {
+        checkout scm
+      }
     }
-}
-
-stage('Deploy')
-{
-    sh "docker-compose down"
-    sh "docker-compose up -d"
-}
-
+ 
+    stage('SCA-SAST-SNYK-TEST')
+    {
+      agent
+      {
+        label 'ubuntu-APPserver'
+      }
+      steps
+      {
+        echo "SNYK-TEST"
+      }
+    }
+ 
+     stage('BUILD-AND-TAG')
+    {
+      agent
+      {
+        label 'ubuntu-APPserver'
+      }
+      steps
+      {
+         script
+         {
+            def app = docker.build("zimmate222/snakegame")
+            app.tag("latest")
+         }
+      }
+    }
+ 
+      stage('POST-TO-DOCKERHUB')
+    {
+      agent
+      {
+        label 'ubuntu-APPserver'
+      }
+      steps
+      {
+         script
+         {
+            docker.withRegistry("https://registry.hub.docker.com", "dockerhub_credentials")
+            {
+                def app = docker.image("zimmate222/snakegame")
+                app.push("latest")
+ 
+            }
+           
+         }
+      }
+    }
+ 
+   
+   
+  }
+ 
 }
