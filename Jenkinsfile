@@ -1,4 +1,4 @@
-node('ubuntu-APPserver')
+wnode('ubuntu-APPserver')
 {
  
 def app
@@ -12,7 +12,7 @@ stage('Build-and-Tag')
 {
     /* This builds the actual image; 
          * This is synonymous to docker build on the command line */
-    app = docker.build('zimmate222/snakegame')
+    app = docker.build('zimmate222/snakegames')
 }
  
 stage('Post-to-dockerhub')
