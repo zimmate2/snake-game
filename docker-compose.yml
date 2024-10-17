@@ -1,7 +1,7 @@
 version: '3.3' 
 services:
   snake:
-    image: 'zimmate222/snakegame'
+    image: 'zimmate222/snakegames'
     environment:
       - "PORT:3000"
     ports:
