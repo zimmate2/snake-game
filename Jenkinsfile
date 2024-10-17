@@ -1,85 +1,39 @@
-pipeline
+node('ubuntu-APPserver')
 {
-  agent none
  
-  stages
-  {
-    stage('CLONE GIT REPOSITORY')
+def app
+stage('Cloning Git')
+{
+    /* Let's make sure we have the repository cloned to our workspace */
+    checkout scm
+}
+ 
+stage('Build-and-Tag')
+{
+    /* This builds the actual image; 
+         * This is synonymous to docker build on the command line */
+    app = docker.build('zimmate222/snakegame')
+}
+ 
+stage('Post-to-dockerhub')
+{
+    docker.withRegistry('https://registry.hub.docker.com', 'zimmate')
     {
-      agent
-      {
-        label 'ubuntu-APPserver'
-      }
-      steps
-      {
-        checkout scm
-      }
+        app.push('latest')
     }
+}
  
-    stage('SCA-SAST-SNYK-TEST')
-    {
-      agent
-      {
-        label 'ubuntu-APPserver'
-      }
-      steps
-      {
-        echo "SNYK-TEST"
-      }
-    }
- 
-    stage('BUILD-AND-TAG')
-    {
-      agent
-      {
-        label 'ubuntu-APPserver'
-      }
-      steps
-      {
-         script
-         {
-            def app = docker.build("zimmate222/snakegame")
-            app.tag("latest")
-         }
-      }
-    }
- 
-    stage('POST-TO-DOCKERHUB')
-    {
-      agent
-      {
-        label 'ubuntu-APPserver'
-      }
-      steps
-      {
-         script
-         {
-            docker.withRegistry("https://registry.hub.docker.com", "zimmate")
-            {
-                def app = docker.image("zimmate222/snakegame")
-                app.push("latest")
- 
-            }
-           
-         }
-      }
-    }
- 
-    stage('DEPLOYMENT')
-    {
-      agent
-      {
-        label 'ubuntu-APPserver'
-      }
-      steps
-      {
-        sh "docker-compose down"
-        sh "docker-compose up -d"
-      }
-    }
- 
-   
-   
-  }
+stage('Deploy')
+{
+    sh "docker-compose down"
+    sh "docker-compose up -d"
+}
  
 }
+
+
+
+
+
+
+
