@@ -1,4 +1,4 @@
-wnode('ubuntu-APPserver')
+node('ubuntu-APPserver')
 {
  
 def app
