@@ -24,11 +24,11 @@ pipeline
       }
       steps
       {
-        snykSecurity{
+        snykSecurity(
             snykInstallation: 'Synk'.
             snykTokenId: 'snykid',
             severity: 'critical'
-        }
+        )
       }
     }
  
