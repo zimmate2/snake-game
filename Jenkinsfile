@@ -25,7 +25,7 @@ pipeline
       steps
       {
         snykSecurity(
-            snykInstallation: 'Synk'.
+            snykInstallation: 'Synk',
             snykTokenId: 'snykid',
             severity: 'critical'
         )
