@@ -31,7 +31,25 @@ pipeline
         )
       }
     }
- 
+    
+    // from here down to next comment 
+    stage('SonarQube Analysis') {
+        agent {
+            label 'ubuntu-APPserver'
+        }
+        steps {
+            script {
+                def scannerHome = tool 'SonarQubeScanner'
+                withSonarQubeEnv('sonarqube') {
+                    sh "${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=ChatApp \
+                        -Dsonar.sources=."
+                }
+            }
+        }
+    }
+    // this is what we edited
+    
     stage('BUILD-AND-TAG')
     {
       agent
